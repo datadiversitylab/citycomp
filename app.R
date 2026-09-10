@@ -27,7 +27,14 @@ body <- dashboardBody(
     theme = "grey_light"
   ),
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
+  tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
+  tags$script(defer = NA,
+    src = "https://umami.datadiversitylab.synology.me/script.js",
+    `data-website-id` = "543cffef-a100-47af-9dd9-2cf39517077b",
+    `data-domains` = "datadiversitylab.github.io",
+    `data-tag` = "cityclusters"
+  )
+),
   fluidRow(
     column(width = 4,
            box(width = NULL,title = tagList(shiny::icon("info-circle",class = 'fa-lg'), "About the app"), solidHeader = T, collapsible = T, status = 'primary',
