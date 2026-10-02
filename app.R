@@ -112,36 +112,25 @@ server <- function(input, output, session) {
     
     if (input$dataset == "climate") {
       # Climate Only
-      m <- data.table::fread(file = here("data", "clim_only_30s_cluster_data", "dists.csv.gz"))
-      clim_30s <- read.csv(here("data", "clim_only_30s_cluster_data", "cities_5.csv"))
-      City_chars <- clim_30s[, c(1:5, 26)]
+      m <- data.table::fread(file = here("data", "clim_only_30s_cluster_data", "climate_dists.csv"),drop=1)
+      
+      clim_30s <- read.csv(here("data", "clim_only_30s_cluster_data", "climate_dataset.csv"))
+      City_chars <- clim_30s[, c(1:6, 29)]
       City_pcs <- clim_30s[, c(27, 28)]
       
     } else if (input$dataset == "combined") {
       # Combined
-      m <- data.table::fread(file = here("data", "combined_30s_cluster_data", "dists.csv.gz"))
-      comb_30s <- read.csv(here("data", "combined_30s_cluster_data", "cities_6.csv"))
-      City_chars <- comb_30s[, c(1:5, 36)]
-      City_pcs <- comb_30s[, c(37, 38)]
+      m <- data.table::fread(file = here("data", "combined_30s_cluster_data", "combined_dists.csv"),drop=1)
+      comb_30s <- read.csv(here("data", "combined_30s_cluster_data", "combined_dataset.csv"))
+      City_chars <- comb_30s[, c(1:6, 37)]
+      City_pcs <- comb_30s[, c(35, 36)]
       
     } else {  # Human Only
       # Human Only
-      dataScaled <- read.csv(here("data", "cities_scaled.csv"), row.names = 1)
-      datacoords <- read.csv(here("data", "cities_coords.csv"), row.names = 1)
-      pc <- princomp(dataScaled[,c(3:12)])
-      km.res <- kmeans(dataScaled[,c(3:12)], 6)
-      PCAdata <- data.frame(pc$scores, "cluster" = factor(km.res$cluster))
-      City_chars <- cbind.data.frame(City = row.names(dataScaled), 
-                                     Region =  dataScaled$Region, 
-                                     Cluster = km.res$cluster, 
-                                     Longitude =  datacoords$x,
-                                     Latitude = datacoords$y)
-      City_pcs <- PCAdata[,c(1,2)]
-      colnames(City_pcs) <- c("PC1", "PC2")
-      m <- as.matrix(dist(City_pcs, method = "euclidean", 
-                          diag = FALSE, upper = FALSE))
-      City_chars$Cluster <- sapply(City_chars$Cluster, function(x) LETTERS[x])
-      m <- round(m, 3)
+      m <- data.table::fread(file = here("data","human_only_cluster_data", "anthro_dists.csv"),drop=1)
+      comb_30s <- read.csv(here("data", "human_only_cluster_data", "anthro_dataset.csv"))
+      City_chars <- comb_30s[, c(2:6, 18)]
+      City_pcs <- comb_30s[, c(16, 17)]
     }
     
 
@@ -202,6 +191,8 @@ server <- function(input, output, session) {
     x <- input$cities
     y <- input$clusters
     z <- input$continent
+    
+
     
     if(length(x) != 0 & length(y) != 0 & length(z) != 0){
       d1 <- data.frame(m[, ..x])
